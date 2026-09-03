@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>💖 Yayang 💖</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+    <style>
+        body {
+          background-color: #ffe6e6; /* Soft pink */
+          font-family: Arial, sans-serif;
+          margin: 0;
+          min-height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: relative;
+          overflow-x: hidden;
+        }
+
+        /* --- Museum Photo Gallery Styling --- */
+        .photo-gallery {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          pointer-events: none; /* Let clicks pass through empty spaces */
+          z-index: 1;
+        }
+
+        .museum-photo {
+          position: absolute;
+          pointer-events: auto; /* Re-enable pointer events for hover/click */
+          background-color: #ffffff;
+          padding: 10px 10px 25px 10px; /* Polaroid frame look */
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+          border-radius: 4px;
+          transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0.3s;
+          width: 160px;
+        }
+
+        .museum-photo img {
+          width: 100%;
+          height: 160px;
+          object-fit: cover;
+          border-radius: 2px;
+          display: block;
+        }
+
+        /* Scattered Positions & Rotations */
+        .photo1 { top: 10%; left: 8%; transform: rotate(-12deg); }
+        .photo2 { top: 12%; right: 8%; transform: rotate(10deg); }
+        .photo3 { bottom: 12%; left: 10%; transform: rotate(8deg); }
+        .photo4 { bottom: 10%; right: 12%; transform: rotate(-15deg); }
+
+        /* Hover Effect */
+        .museum-photo:hover {
+          transform: scale(1.15) rotate(0deg) !important;
+          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+          z-index: 10;
+        }
+
+        /* --- Main Content Wrapper --- */
+        .envlope-wrapper {
+          text-align: center;
+          position: relative;
+          z-index: 2; /* Ensures envelope stays on top of gallery background */
+        }
+
+        #envelope {
+          position: relative;
+          width: 280px;
+          height: 180px;
+          border-bottom-left-radius: 6px;
+          border-bottom-right-radius: 6px;
+          margin: 0 auto;
+          background-color: #d9534f; /* Warm romantic red */
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .front { position: absolute; width: 0; height: 0; z-index: 3; }
+        .flap {
+          border-left: 140px solid transparent;
+          border-right: 140px solid transparent;
+          border-bottom: 82px solid transparent;
+          border-top: 98px solid #d9534f;
+          transform-origin: top;
+          pointer-events: none;
+        }
+        .pocket {
+          border-left: 140px solid #f5a3a2;
+          border-right: 140px solid #f5a3a2;
+          border-bottom: 90px solid #ff6f61;
+          border-top: 90px solid transparent;
+          border-bottom-left-radius: 6px;
+          border-bottom-right-radius: 6px;
+        }
+
+        .letter {
+          position: relative;
+          background-color: #fff;
+          width: 90%;
+          margin: 0 auto;
+          height: 90%;
+          top: 5%;
+          border-radius: 6px;
+          box-shadow: 0 2px 26px rgba(0, 0, 0, 0.12);
+          font-family: "Dancing Script", cursive;
+        }
+
+        .words { position: absolute; left: 10%; width: 80%; height: 14%; background-color: #ffe6e6; 
+                font-family: "Indie Flower", cursive;
+                font-weight: 400;
+                font-style: normal; }
+        .words.line2 { top: 30%; text-align: center; font-size: 1.1rem; }
+        .words.line3 { top: 50%; text-align: center; font-size: 1.1rem; }
+        .words.line4 { top: 70%; text-align: center; font-size: 1.1rem; }
+
+        .open .flap {
+          transform: rotateX(180deg);
+          transition: transform 0.4s ease, z-index 0.6s;
+          z-index: 1;
+        }
+        .close .flap {
+          transform: rotateX(0deg);
+          transition: transform 0.4s 0.6s ease, z-index 1s;
+          z-index: 5;
+        }
+        .close .letter {
+          transform: translateY(0px);
+          transition: transform 0.4s ease, z-index 1s;
+          z-index: 1;
+        }
+        .open .letter {
+          transform: translateY(-100px);
+          transition: transform 0.4s 0.6s ease, z-index 0.6s;
+          z-index: 2;
+        }
+
+        /* Hearts floating up from letter */
+        .hearts { position: absolute; top: 90px; left: 0; right: 0; z-index: 2; }
+        .heart { position: absolute; bottom: 0; right: 10%; pointer-events: none; }
+        .heart:before, .heart:after {
+          position: absolute;
+          content: "";
+          left: 50px;
+          top: 0;
+          width: 50px;
+          height: 80px;
+          background: #e60073;
+          border-radius: 50px 50px 0 0;
+          transform: rotate(-45deg);
+          transform-origin: 0 100%;
+        }
+        .heart:after {
+          left: 0;
+          transform: rotate(45deg);
+          transform-origin: 100% 100%;
+        }
+        .close .heart { opacity: 0; animation: none; }
+
+        .a1 { left: 20%; transform: scale(0.6); opacity: 1; animation: slideUp 4s linear 1, sideSway 2s ease-in-out 4 alternate; animation-fill-mode: forwards; animation-delay: 0.7s; }
+        .a2 { left: 55%; transform: scale(1); opacity: 1; animation: slideUp 5s linear 1, sideSway 4s ease-in-out 2 alternate; animation-fill-mode: forwards; animation-delay: 0.7s; }
+        .a3 { left: 10%; transform: scale(0.8); opacity: 1; animation: slideUp 7s linear 1, sideSway 2s ease-in-out 6 alternate; animation-fill-mode: forwards; animation-delay: 0.7s; }
+
+        @keyframes slideUp { 0% { top: 0; } 100% { top: -600px; } }
+        @keyframes sideSway { 0% { margin-left: 0px; } 100% { margin-left: 50px; } }
+
+        /* Buttons under envelope */
+        .button-group {
+          margin-top: 20px;
+        }
+        .toggle-btn {
+          font-weight: 800;
+          background-color: transparent;
+          border: solid 2px #d9534f;
+          border-radius: 4px;
+          color: #d9534f;
+          font-size: 14px;
+          text-transform: uppercase;
+          padding: 10px 20px;
+          margin: 0 10px;
+          cursor: pointer;
+        }
+        .toggle-btn:hover { background-color: #d9534f; color: #fff; }
+
+        /* Audio player styling */
+        .audio-player {
+          margin-top: 20px;
+        }
+
+        /* Responsive adjustments for mobile screens */
+        @media (max-width: 600px) {
+          .museum-photo { width: 120px; }
+          .museum-photo img { height: 120px; }
+          .photo1 { top: 4%; left: 4%; }
+          .photo2 { top: 4%; right: 4%; }
+          .photo3 { bottom: 4%; left: 4%; }
+          .photo4 { bottom: 4%; right: 4%; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Museum Image Gallery Overlay -->
+    <div class="photo-gallery">
+      <div class="museum-photo photo1">
+        <img src="img1.jpg" alt="Memory 1">
+      </div>
+      <div class="museum-photo photo2">
+        <img src="img2.jpg" alt="Memory 2">
+      </div>
+      <div class="museum-photo photo3">
+        <img src="img3.jpg" alt="Memory 3">
+      </div>
+      <div class="museum-photo photo4">
+        <img src="img4.jpg" alt="Memory 4">
+      </div>
+    </div>
+
+    <!-- Central Envelope Container -->
+    <div class="envlope-wrapper">
+      <div id="envelope" class="close">
+        <div class="front flap"></div>
+        <div class="front pocket"></div>
+        <div class="letter">
+          <div class="words line2">💌 Hye Yayang Meks 💖</div>
+          <div class="words line3">Mek Sayang Ktk yayangggg</div>
+          <div class="words line4">BYEEE MUAHAHAHA</div>
+        </div>
+        <!-- Hearts come out of the letter -->
+        <div class="hearts">
+          <div class="heart a1"></div>
+          <div class="heart a2"></div>
+          <div class="heart a3"></div>
+        </div>
+      </div>
+      <div class="button-group">
+        <button class="toggle-btn" onclick="openEnvelope()">Open</button>
+        <button class="toggle-btn" onclick="closeEnvelope()">Close</button>
+      </div>
+      <!-- MP3 player -->
+      <div class="audio-player">
+        <audio id="bg-music" controls loop>
+          <source src="song1.mp3" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+    </div>
+
+    <script>
+      const music = document.getElementById("bg-music");
+
+      function openEnvelope() {
+        const envelope = document.getElementById("envelope");
+        envelope.classList.remove("close");
+        envelope.classList.add("open");
+        
+        // Also triggers music playback when envelope is opened
+        playAudio();
+      }
+
+      function closeEnvelope() {
+        const envelope = document.getElementById("envelope");
+        envelope.classList.remove("open");
+        envelope.classList.add("close");
+      }
+
+      function playAudio() {
+        if (music.paused) {
+          music.play().catch(error => {
+            console.log("Autoplay prevented:", error);
+          });
+        }
+      }
+
+      // Automatically play music on the user's first click anywhere on the website
+      document.addEventListener("click", function startOnFirstInteraction() {
+        playAudio();
+        // Remove listener after first interaction so it doesn't interrupt playback state
+        document.removeEventListener("click", startOnFirstInteraction);
+      });
+    </script>
+</body>
+</html>
